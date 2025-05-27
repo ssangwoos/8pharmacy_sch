@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>에이트약국 근무 스케줄</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 class="page-title">에이트약국 근무 스케줄 🗓️</h1>
+
+  <div class="app-layout-container"> <div class="calendar-section"> <div class="calendar-navigation-controls">
+        <button id="prevMonthBtn">&lt; 이전 달</button>
+        <h2 id="currentMonthYear"></h2>
+        <button id="nextMonthBtn">다음 달 &gt;</button>
+      </div>
+      <div id="calendar" class="calendar-grid">
+        </div>
+    </div>
+
+    <div class="sidebar-section"> <button id="statsButton" class="stats-btn">📊 통계 보기</button>
+      <div id="staffListContainer" class="staff-list-container">
+        <h3>직원 명단</h3>
+        <ul id="staffListUl">
+          </ul>
+      </div>
+    </div>
+
+  </div> <div id="loader" class="loader" style="display:none;">로딩 중...</div>
+  <div id="statusMessage" class="status-message"></div>
+
+  <div id="workRecordModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="closeModalBtn">&times;</span>
+      <h3 id="modalTitle">근무 기록 추가</h3>
+      <form id="workRecordForm">
+        <div>
+          <label for="recordDate">날짜:</label>
+          <input type="date" id="recordDate" name="date" readonly>
+        </div>
+        <div>
+          <label for="staffName">이름:</label>
+          <select id="staffName" name="name" required></select>
+        </div>
+        <div>
+          <label for="workType">근무유형:</label>
+          <select id="workType" name="workType" required>
+            <option value="주간">주간</option>
+            <option value="마감">마감</option>
+            <option value="휴가">휴가</option>
+          </select>
+        </div>
+        <div id="timeFields">
+          <div class="time-select-group">
+            <label for="startHour">출근시간:</label>
+            <div class="time-inputs">
+              <select id="startHour" name="startHour"></select><span>시</span>
+              <select id="startMinute" name="startMinute"></select><span>분</span>
+            </div>
+          </div>
+          <div class="time-select-group">
+            <label for="endHour">퇴근시간:</label>
+            <div class="time-inputs">
+              <select id="endHour" name="endHour"></select><span>시</span>
+              <select id="endMinute" name="endMinute"></select><span>분</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="notes">비고:</label>
+          <textarea id="notes" name="notes"></textarea>
+        </div>
+        <button type="submit" id="saveRecordBtn">저장</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="statsModal" class="modal">
+    <div class="modal-content stats-modal-content">
+      <span class="close-button" id="closeStatsModalBtn">&times;</span>
+      <h3>월간 근무 통계 📈</h3>
+      <div class="stats-controls">
+        <label for="statsStaffSelect">직원 선택:</label>
+        <select id="statsStaffSelect"></select>
+        <span id="statsMonthYearLabel"></span>
+      </div>
+      <div id="statsTableContainer">
+        </div>
+      <div id="statsSummaryContainer">
+        </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
