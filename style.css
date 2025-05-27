@@ -1,4 +1,4 @@
-/* style.css (전체 코드 - 레이아웃 개선 최종) */
+/* style.css (전체 코드 - 2025-05-27 최종) */
 body {
   font-family: 'Malgun Gothic', '맑은 고딕', Dotum, '돋움', sans-serif;
   margin: 0;
@@ -7,47 +7,47 @@ body {
   color: #333;
   font-size: 13px;
   line-height: 1.6;
-  display: flex; /* body를 flex로 만들어 h1과 app-layout-container를 중앙 정렬 */
+  display: flex; 
   flex-direction: column;
-  align-items: center; /* 가로 중앙 정렬 */
+  align-items: center; 
 }
 
-.page-title { /* 페이지 전체 제목 */
+.page-title { 
   text-align: center;
   color: #333;
   font-size: 1.8em;
   margin-bottom: 20px;
-  width: 100%; /* 전체 너비 차지 */
-  max-width: 1200px; /* app-layout-container와 너비 맞춤 */
+  width: 100%; 
+  max-width: 1200px; 
 }
 
 .app-layout-container {
   display: flex;
-  gap: 20px; /* 달력 섹션과 사이드바 섹션 사이 간격 */
+  gap: 20px; 
   width: 100%;
-  max-width: 1200px; /* 앱 전체 최대 너비 */
-  background-color: #fff; /* 컨테이너 배경색 */
-  padding: 20px; /* 컨테이너 내부 여백 */
-  border-radius: 4px; /* 약간 둥근 모서리 */
+  max-width: 1200px; 
+  background-color: #fff; 
+  padding: 20px; 
+  border-radius: 4px; 
   box-shadow: 0 1px 5px rgba(0,0,0,0.15);
-  align-items: flex-start; /* 상단 정렬 */
+  align-items: flex-start; 
 }
 
 .calendar-section {
   display: flex;
-  flex-direction: column; /* 컨트롤과 그리드를 세로로 배치 */
-  align-items: center; /* 내부 요소들을 중앙 정렬 (컨트롤 그룹) */
-  flex-grow: 1; /* 가능한 많은 공간 차지 */
-  min-width: 0; /* flex item 수축 시 최소 너비 확보 */
+  flex-direction: column; 
+  align-items: center; 
+  flex-grow: 1; 
+  min-width: 0; 
 }
 
 .calendar-navigation-controls {
   display: flex;
-  justify-content: center; /* 내부 아이템들(버튼, h2) 중앙 정렬 */
+  justify-content: center; 
   align-items: center;
   margin-bottom: 15px;
-  width: 100%; /* calendar-section 너비에 맞춤 */
-  max-width: 700px; /* 달력 그리드와 유사한 최대 너비 (선택사항) */
+  width: 100%; 
+  max-width: 700px; 
 }
 
 .calendar-navigation-controls button {
@@ -63,48 +63,45 @@ body {
   background-color: #4cae4c;
 }
 
-.calendar-navigation-controls h2 { /* 연도/월 표시 */
-  margin: 0 15px; /* 버튼과의 간격 */
+.calendar-navigation-controls h2 { 
+  margin: 0 15px; 
   font-size: 1.5em;
   color: #333;
   white-space: nowrap;
   text-align: center; 
 }
 
-#calendar { /* 실제 달력 그리드 */
+#calendar { 
   width: 100%; 
-  /* max-width: 700px; /* 선택사항: 달력 최대 너비 고정 시 */
 }
 
 .sidebar-section {
-  width: 200px; /* 사이드바 너비 고정 */
-  flex-shrink: 0; /* 사이드바 너비 줄어들지 않도록 */
+  width: 200px; 
+  flex-shrink: 0; 
   display: flex;
-  flex-direction: column; /* 버튼과 직원목록을 세로로 배치 */
-  gap: 15px; /* 버튼과 직원목록 사이 간격 */
+  flex-direction: column; 
+  gap: 15px; 
 }
 
 .sidebar-section .stats-btn {
-  width: 100%; /* 사이드바 너비에 맞춤 */
+  width: 100%; 
   padding: 8px 12px;
   font-size: 0.9em;
   background-color: #17a2b8; 
-  border: 1px solid #138496; /* 테두리 색상도 일치 */
+  border: 1px solid #138496; 
 }
 .sidebar-section .stats-btn:hover {
   background-color: #138496;
 }
 
 .staff-list-container {
-  width: 100%; /* 사이드바 너비에 맞춤 */
-  flex-grow: 1; /* 남은 세로 공간 채움 (스크롤 위해) */
+  width: 100%; 
+  flex-grow: 1; 
   padding: 10px;
   border: 1px solid #ddd;
   background-color: #f9f9f9;
   border-radius: 4px;
-  /* max-height 설정은 스크롤이 필요한 경우에 사용.
-     예: max-height: calc(130px * 7 - 30px); /* 달력 높이에 대략 맞추고 싶을 때 */
-  max-height: 450px; /* 또는 고정된 최대 높이 */
+  max-height: 450px; 
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -128,7 +125,7 @@ body {
   margin-bottom: 5px;
   border-radius: 3px;
   cursor: pointer;
-  color: #fff; /* 글자색은 JS에서 배경색에 따라 조정됨 */
+  color: #fff; /* JS에서 배경색에 따라 조정됨 */
   font-weight: bold;
   font-size: 0.85em;
   transition: opacity 0.3s ease, box-shadow 0.2s ease;
@@ -142,7 +139,7 @@ body {
 }
 
 
-/* --- 달력 그리드 (이하 스타일은 이전과 거의 동일) --- */
+/* --- 달력 그리드 --- */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -186,19 +183,45 @@ body {
   font-size: 0.95em;
   padding-left: 2px;
   flex-shrink: 0; 
+  cursor: pointer; /* 휴일 지정을 위해 클릭 가능하게 */
+  user-select: none; /* 텍스트 선택 방지 */
+  border-radius: 3px; /* 클릭 영역 시각화 (선택사항) */
+  padding: 2px 4px;
 }
+.calendar-day .day-number:hover {
+  background-color: #f0f0f0; /* 휴일 지정 클릭 시 호버 효과 */
+}
+
+
 .calendar-day.other-month {
   background-color: #f9f9f9;
 }
 .calendar-day.other-month .day-number {
   color: #aaa;
 }
-.calendar-day.sunday .day-number { color: red; }
-.calendar-day.saturday .day-number { color: blue; }
-.calendar-day.today .day-number {
-  font-weight: bold;
-  color: #007bff;
+.calendar-day.other-month .day-number:hover { /* 다른 달 날짜는 호버 효과 없음 */
+  background-color: transparent;
 }
+
+
+.calendar-day .day-number.sunday-date-number { /* 일반 일요일 */
+  color: red; 
+}
+.calendar-day .day-number.holiday-date-number { /* 휴일 지정 */
+  color: red !important; 
+  font-weight: bold;
+}
+.calendar-day.saturday .day-number { /* 토요일 */
+  color: blue;
+}
+.calendar-day.today .day-number { /* 오늘 */
+  font-weight: bold;
+  color: #007bff; /* 오늘 날짜는 파란색 유지, 휴일이면 빨간색 우선 */
+}
+.calendar-day.today .day-number.holiday-date-number { /* 오늘이면서 휴일이면 빨간색 */
+  color: red !important;
+}
+
 
 /* --- 시간 막대 그래프 스타일 --- */
 .work-entries-container {
@@ -206,14 +229,14 @@ body {
   position: relative;
   display: flex; 
   flex-direction: column; 
-  gap: 2px; /* 실제론 top으로 제어되므로 시각적 참고용 */
+  gap: 2px; 
 }
 
 .work-entry {
   position: absolute; 
   height: 18px;     
   line-height: 18px; 
-  font-size: 0.8em;  
+  font-size: 1.04em;  /* 요청사항: 130% 확대 (0.8em * 1.3) */
   padding: 0 5px;    
   border-radius: 3px;
   color: #fff; 
@@ -286,11 +309,11 @@ body {
 .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
 
 /* --- 모달 폼 스타일 --- */
-#workRecordForm div:not(.time-select-group):not(.time-inputs) {
+#workRecordForm div:not(.time-select-group):not(.time-inputs) { /* 일반적인 폼 그룹 */
   margin-bottom: 12px; 
 }
 
-#workRecordForm label { 
+#workRecordForm label { /* 일반 레이블 */
   display: block; 
   margin-bottom: 4px; 
   font-weight: bold; 
@@ -299,9 +322,9 @@ body {
 }
 
 #workRecordForm input[type="date"],
-#workRecordForm select, /* 일반 select (이름, 근무유형) */
+#workRecordForm select, /* 이름, 근무유형 드롭다운 */
 #workRecordForm textarea {
-  width: calc(100% - 18px); /* 패딩과 테두리를 고려한 너비 */
+  width: calc(100% - 18px); 
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -322,33 +345,49 @@ body {
 #workRecordForm .time-select-group label { /* 출근시간:, 퇴근시간: 레이블 */
   margin-bottom: 0; 
   margin-right: 10px; 
-  min-width: 60px; /* 레이블 너비 고정 */
-  flex-shrink: 0; /* 레이블 너비 줄어들지 않도록 */
+  min-width: 60px; 
+  flex-shrink: 0;
 }
 
 #workRecordForm .time-inputs { /* 시/분 드롭다운 + "시", "분" 텍스트 묶음 */
   display: flex;
   align-items: center;
-  flex-grow: 1; /* 남은 공간 채우기 */
+  flex-grow: 1;
 }
 
 #workRecordForm .time-inputs select { /* 시, 분 드롭다운 <select> 요소 */
   min-width: 55px; 
-  padding: 8px 5px; /* 패딩 조정 */
-  margin-right: 2px; /* 바로 뒤 "시" 또는 "분" 텍스트와의 간격 */
+  padding: 8px 5px; 
+  margin-right: 2px; 
   font-size: 0.9em; 
-  flex-grow: 1; /* 가능한 공간을 동일하게 나눠 가짐 */
+  flex-grow: 1; 
   border: 1px solid #ccc; 
   border-radius: 3px; 
   box-sizing: border-box; 
 }
 
-#workRecordForm .time-inputs span { /* HTML에 "시", "분" 텍스트를 <span>으로 감쌌을 경우 */
-  margin-left: 2px; /* 앞 select와의 간격 */
-  margin-right: 8px; /* 다음 select 그룹과의 간격 (필요시) */
+#workRecordForm .time-inputs span { /* HTML에 "시", "분" 텍스트를 span으로 감쌌을 경우 */
+  margin-left: 2px; 
+  margin-right: 8px; 
   font-size: 0.9em;
-  flex-shrink: 0; /* "시", "분" 텍스트가 줄어들지 않도록 */
+  flex-shrink: 0;
 }
+
+/* 반복 적용 체크박스 레이블 스타일 */
+#workRecordForm .checkbox-label {
+  display: flex; 
+  align-items: center;
+  font-weight: normal; 
+  font-size: 0.9em;
+  margin-bottom: 15px; 
+  color: #444; /* 일반 레이블과 동일하게 */
+}
+#workRecordForm .checkbox-label input[type="checkbox"] {
+  width: auto; 
+  margin-right: 8px;
+  vertical-align: middle; /* 추가 */
+}
+
 
 #workRecordForm textarea { 
   min-height: 70px; 
@@ -364,7 +403,7 @@ body {
   cursor: pointer;
   font-size: 1em;
   width: 100%;
-  margin-top: 10px; /* 위 요소와의 간격 */
+  margin-top: 10px; 
 }
 #workRecordForm button[type="submit"]:hover { 
   background-color: #4cae4c; 
@@ -398,7 +437,7 @@ body {
 #statsMonthYearLabel {
     font-weight: bold;
     font-size: 1.1em;
-    margin-left: auto; /* 우측으로 밀기 */
+    margin-left: auto; 
 }
 
 #statsTableContainer table {
@@ -425,8 +464,8 @@ body {
   font-weight: bold;
 }
 /* 통계 테이블 토/일요일 글자색 */
-#statsTableContainer td.saturday { color: blue; }
-#statsTableContainer td.sunday { color: red; }
+#statsTableContainer td.saturday-text { color: blue; }
+#statsTableContainer td.sunday-text { color: red; }
 
 
 #statsSummaryContainer {
@@ -453,6 +492,19 @@ body {
     border-top: 1px dashed #ccc;
     padding-top: 10px;
 }
+
+/* 통계 모달 내 "직원 선택" 안내 메시지 */
+.stats-placeholder-message {
+  text-align: center;
+  font-size: 1.05em; 
+  color: #6c757d; 
+  padding: 50px 20px; 
+  border: 1px dashed #ced4da; 
+  border-radius: 4px;
+  background-color: #f8f9fa; 
+  margin-top: 10px;
+}
+
 
 /* --- 로더 및 상태 메시지 --- */
 .loader { 
