@@ -535,3 +535,32 @@ body {
 }
 .status-message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;}
 .status-message.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;}
+
+.work-entry .delete-btn {
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  font-size: 14px; /* 아이콘 크기 */
+  font-weight: bold;
+  color: #ffdddd; /* 평소 버튼 색상 (흐리게) */
+  background-color: rgba(0, 0, 0, 0.1); /* 약간의 배경 */
+  border: none;
+  border-radius: 50%;
+  width: 16px;  /* 버튼 크기 */
+  height: 16px; /* 버튼 크기 */
+  line-height: 16px; /* 아이콘 중앙 정렬 */
+  text-align: center;
+  cursor: pointer;
+  display: none; /* 평소에는 숨김 */
+  padding: 0;
+  user-select: none; /* 더블클릭 시 텍스트 선택 방지 */
+}
+
+.work-entry:hover .delete-btn {
+  display: block; /* 마우스 올리면 표시 */
+}
+
+.work-entry .delete-btn:hover {
+  background-color: rgba(200, 0, 0, 0.7); /* 마우스 올리면 진한 배경 */
+  color: white; /* 흰색 아이콘 */
+}
