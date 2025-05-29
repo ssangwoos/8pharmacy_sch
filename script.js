@@ -1,4 +1,4 @@
-// script.js (전체 코드 - 2025-05-29 모든 기능 포함, 최종 검토)
+// script.js (전체 코드 - 2025-05-29 최종 수정본 v2)
 
 // 중요!! 본인의 Apps Script 웹 앱 URL로 반드시 교체하세요.
 const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz5nGNr7MpKYnV3l_sh6kzOn4g7GFPtiHATpymBcaZjteUIWxdxeV6xzcvyfOq0Exq0/exec'; 
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const TOTAL_TIMELINE_MINUTES = (TIMELINE_END_HOUR - TIMELINE_START_HOUR) * 60;
   const MAX_STAFF_PER_DAY_DISPLAY = 5; 
   const TRACK_HEIGHT_WITH_GAP = 20; 
-  const MIN_HOURS_FOR_BAR_DISPLAY = 9; // 요청사항 반영
+  const MIN_HOURS_FOR_BAR_DISPLAY = 9;
   const WEEKDAYS_KO = ['일', '월', '화', '수', '목', '금', '토'];
 
 
@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try { console.log(`[renderCalendar] 근무 기록 가져오기 시작: ${year}-${month}`); const response = await fetch(`${APPS_SCRIPT_WEB_APP_URL}?action=getWorkRecords&year=${year}&month=${month}`); console.log('[renderCalendar] Fetch 응답 상태:', response.status, response.ok); if (!response.ok) { const errorText = await response.text(); console.error('[renderCalendar] Fetch 실패. 상태:', response.status, '응답 내용:', errorText); throw new Error(`[${response.status}] ${response.statusText}. 서버 상세: ${errorText}`); } const result = await response.json(); console.log('[renderCalendar] 파싱된 JSON 결과 (구조):', {success: result.success, dataLength: result.data ? result.data.length : 'N/A', error: result.error, details: result.details, debug_info_length: result.debug_info ? result.debug_info.length : 'N/A' }); if (result.debug_info && result.debug_info.length > 0) { console.warn("[renderCalendar] 서버 DEBUG INFO:"); result.debug_info.forEach(d => { console.warn(`  Row ${d.rowNum}: Raw='${d.rawDateCell}', Type=${d.type}, IsDateObj=${d.isDateObjViaInstanceof}, Parsed=${d.parsed}, SheetYM='${d.sheetYM}', TargetYM='${d.targetYM}', Match=${d.match}, finalDateForClient='${d.finalDateForClient}'`); });} if (!result.success) { console.error('[renderCalendar] API 응답 success:false. 오류:', result.error, '상세:', result.details); throw new Error(result.error || 'API로부터 근무 기록 로딩 실패.'); } allRecordsForCurrentMonth = result.data || []; console.log(`[renderCalendar] 이번 달 기록 (${allRecordsForCurrentMonth.length}개) 처리 시작.`); displayWorkRecords(allRecordsForCurrentMonth); applyCalendarHighlight(); console.log('[renderCalendar] 달력 표시 및 하이라이트 적용 완료.'); } catch (error) { console.error('[renderCalendar] CATCH 블록. 근무 기록 가져오기/처리 중 오류:', error.message, error.stack); allRecordsForCurrentMonth = []; showStatusMessage('근무 기록 로딩 실패: ' + error.message, false); } finally { console.log('[renderCalendar] Fetch 과정 종료, 로더 숨김.'); hideLoader(); }
   }
   
+  // displayWorkRecords 함수 (막대 최소 길이 보장 및 삭제 버튼 추가)
   function displayWorkRecords(records) {
     if (!Array.isArray(records)) { console.warn("[displayWorkRecords] records는 배열이 아님.", records); return; }
     const recordsByDate = {};
@@ -176,24 +177,43 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (!record.startTime || !record.endTime || TOTAL_TIMELINE_MINUTES <= 0 || !/^\d{2}:\d{2}$/.test(record.startTime) || !/^\d{2}:\d{2}$/.test(record.endTime) ) { textContentForBar = `${record.name}: ${record.workType || '(시간없음)'}`; entryEl.textContent = textContentForBar; entryEl.appendChild(deleteBtn); entryEl.style.position = 'relative'; entryEl.style.width = '100%'; }
         else { 
           const timeToMinutes = (timeStr) => { const [h, m] = timeStr.split(':').map(Number); return h * 60 + m; };
-          const recordStartMinutes = timeToMinutes(record.startTime); const recordEndMinutes = timeToMinutes(record.endTime);
+          const actualRecordStartMinutes = timeToMinutes(record.startTime); const actualRecordEndMinutes = timeToMinutes(record.endTime);
           const timelineStartTotalMinutes = TIMELINE_START_HOUR * 60;
-          let startOffsetMinutes = recordStartMinutes - timelineStartTotalMinutes; let durationMinutes = recordEndMinutes - recordStartMinutes;
-          if (durationMinutes < 0 && recordStartMinutes > recordEndMinutes) { /* 자정 넘김 보류 */ } if (durationMinutes < 0) durationMinutes = 0;
-          let displayStartOffsetMinutes = Math.max(0, startOffsetMinutes); let displayEndOffsetMinutes; let displayDurationMinutes;
-          if (recordEndMinutes <= timelineStartTotalMinutes || recordStartMinutes >= (timelineStartTotalMinutes + TOTAL_TIMELINE_MINUTES)) displayDurationMinutes = 0;
-          else { displayEndOffsetMinutes = Math.min(TOTAL_TIMELINE_MINUTES, startOffsetMinutes + durationMinutes); displayDurationMinutes = Math.max(0, displayEndOffsetMinutes - displayStartOffsetMinutes); }
-          if (displayDurationMinutes <= 0 && durationMinutes > 0) { textContentForBar = `${record.name}: ${record.workType} (시간대 벗어남)`; entryEl.textContent = textContentForBar; entryEl.appendChild(deleteBtn); entryEl.style.position = 'relative'; entryEl.style.width = '100%'; } 
-          else if (displayDurationMinutes > 0) {
-            const leftPercentage = (displayStartOffsetMinutes / TOTAL_TIMELINE_MINUTES) * 100; let actualWidthPercentage = (displayDurationMinutes / TOTAL_TIMELINE_MINUTES) * 100;
-            const minDurationMinutesEquivalent = MIN_HOURS_FOR_BAR_DISPLAY * 60; const minWidthPercentageEquivalent = (minDurationMinutesEquivalent / TOTAL_TIMELINE_MINUTES) * 100;
-            let finalWidthPercentage = Math.max(actualWidthPercentage, minWidthPercentageEquivalent); finalWidthPercentage = Math.min(finalWidthPercentage, 100 - leftPercentage); finalWidthPercentage = Math.max(0, finalWidthPercentage); 
-            entryEl.style.left = `${Math.max(0, Math.min(100, leftPercentage))}%`; entryEl.style.width = `${finalWidthPercentage}%`;
-            const barWidthPx = (dayCellContentContainer.clientWidth || 100) * (finalWidthPercentage / 100);
-            if (barWidthPx < 20) textContentForBar = '&nbsp;'; else if (barWidthPx < 50) textContentForBar = `${record.startTime.substring(0,2)}-${record.endTime.substring(0,2)}`; else textContentForBar = `${record.startTime}-${record.endTime}`; 
-            if (textContentForBar === '&nbsp;') entryEl.innerHTML = textContentForBar; else entryEl.textContent = textContentForBar;
-            entryEl.appendChild(deleteBtn);
-          } else { textContentForBar = `${record.name}: ${record.workType}`; entryEl.textContent = textContentForBar; entryEl.appendChild(deleteBtn); entryEl.style.position = 'relative'; entryEl.style.width = '100%'; }
+          let actualStartOffsetMinutes = actualRecordStartMinutes - timelineStartTotalMinutes;
+          let actualDurationMinutes = actualRecordEndMinutes - actualRecordStartMinutes;
+          if (actualDurationMinutes < 0 && actualRecordStartMinutes > actualRecordEndMinutes) { /* 자정 넘김 보류 */ } 
+          if (actualDurationMinutes < 0) actualDurationMinutes = 0;
+
+          let displayActualStartOffsetMinutes = Math.max(0, actualStartOffsetMinutes);
+          let displayActualEndOffsetMinutes = Math.min(TOTAL_TIMELINE_MINUTES, actualStartOffsetMinutes + actualDurationMinutes);
+          let displayActualDurationMinutes = Math.max(0, displayActualEndOffsetMinutes - displayActualStartOffsetMinutes);
+
+          if (displayActualDurationMinutes <= 0 && actualDurationMinutes > 0) { 
+             textContentForBar = `${record.name}: ${record.workType} (시간대 벗어남)`; entryEl.textContent = textContentForBar; entryEl.appendChild(deleteBtn); entryEl.style.position = 'relative'; entryEl.style.width = '100%';
+          } else if (displayActualDurationMinutes > 0) {
+            const minVisualDurationMinutes = MIN_HOURS_FOR_BAR_DISPLAY * 60;
+            let visualDurationMinutes = Math.max(displayActualDurationMinutes, minVisualDurationMinutes);
+            let visualStartOffsetMinutes = displayActualEndOffsetMinutes - visualDurationMinutes; // 실제 종료점에서 시각적 길이를 빼서 시작점 결정
+            visualStartOffsetMinutes = Math.max(0, visualStartOffsetMinutes); // 타임라인 왼쪽 경계 넘지 않도록
+            let visualEndOffsetMinutes = Math.min(TOTAL_TIMELINE_MINUTES, visualStartOffsetMinutes + visualDurationMinutes); // 타임라인 오른쪽 경계 넘지 않도록
+            const finalDisplayDurationMinutes = visualEndOffsetMinutes - visualStartOffsetMinutes; // 최종 시각적 길이
+            const finalDisplayStartOffsetMinutes = visualStartOffsetMinutes; // 최종 시각적 시작점
+
+            if (finalDisplayDurationMinutes <= 0) {
+                textContentForBar = `${record.name}: ${record.workType}`; entryEl.textContent = textContentForBar; entryEl.appendChild(deleteBtn); entryEl.style.position = 'relative'; entryEl.style.width = '100%';
+            } else {
+                const leftPercentage = (finalDisplayStartOffsetMinutes / TOTAL_TIMELINE_MINUTES) * 100;
+                const widthPercentage = (finalDisplayDurationMinutes / TOTAL_TIMELINE_MINUTES) * 100;
+                entryEl.style.left = `${Math.max(0, Math.min(100, leftPercentage))}%`;
+                entryEl.style.width = `${Math.max(0, Math.min(100 - leftPercentage, widthPercentage))}%`;
+                const barWidthPx = (dayCellContentContainer.clientWidth || 100) * (widthPercentage / 100);
+                if (barWidthPx < 20) textContentForBar = '&nbsp;'; else if (barWidthPx < 50) textContentForBar = `${record.startTime.substring(0,2)}-${record.endTime.substring(0,2)}`; else textContentForBar = `${record.startTime}-${record.endTime}`; 
+                if (textContentForBar === '&nbsp;') entryEl.innerHTML = textContentForBar; else entryEl.textContent = textContentForBar;
+                entryEl.appendChild(deleteBtn);
+            }
+          } else { 
+            textContentForBar = `${record.name}: ${record.workType}`; entryEl.textContent = textContentForBar; entryEl.appendChild(deleteBtn); entryEl.style.position = 'relative'; entryEl.style.width = '100%';
+          }
         }
         dayCellContentContainer.appendChild(entryEl);
       });
@@ -212,8 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (existingRecordDataWithIdentifier) { 
       const existingRecord = existingRecordDataWithIdentifier; console.log("[openModalForDate] 수정 모드로 열기:", existingRecord);
       modalTitle.textContent = `${existingRecord.date} 근무 기록 수정`; recordDateEl.value = existingRecord.date; staffNameEl.value = existingRecord.name; workTypeEl.value = existingRecord.workType;
-      if (existingRecord.workType !== '휴가' && existingRecord.startTime && /^\d{2}:\d{2}$/.test(existingRecord.startTime)) { const [startH, startM] = existingRecord.startTime.split(':'); startHourEl.value = startH; startMinuteEl.value = startM; } else { startHourEl.value = "00"; startMinuteEl.value = "00"; }
-      if (existingRecord.workType !== '휴가' && existingRecord.endTime && /^\d{2}:\d{2}$/.test(existingRecord.endTime)) { const [endH, endM] = existingRecord.endTime.split(':'); endHourEl.value = endH; endMinuteEl.value = endM; } else { endHourEl.value = "00"; endMinuteEl.value = "00"; }
+      if (existingRecord.workType !== '휴가' && existingRecord.startTime && /^\d{2}:\d{2}$/.test(existingRecord.startTime)) { const [startH, startM] = existingRecord.startTime.split(':'); startHourEl.value = startH; startMinuteEl.value = startM; } else { startHourEl.value = "00"; startMinuteEl.value = "00"; console.log("[openModalForDate] 수정 모드: 출근시간 없음/형식오류, 00:00으로 설정");}
+      if (existingRecord.workType !== '휴가' && existingRecord.endTime && /^\d{2}:\d{2}$/.test(existingRecord.endTime)) { const [endH, endM] = existingRecord.endTime.split(':'); endHourEl.value = endH; endMinuteEl.value = endM; } else { endHourEl.value = "00"; endMinuteEl.value = "00"; console.log("[openModalForDate] 수정 모드: 퇴근시간 없음/형식오류, 00:00으로 설정");}
       notesEl.value = existingRecord.notes || ""; workRecordForm.dataset.mode = "edit"; 
       try { currentEditingRecordOriginalKey = JSON.parse(existingRecord.identifier); } catch(e) { console.error("identifier 파싱 오류:", e); currentEditingRecordOriginalKey = null; }
       saveRecordBtn.textContent = "수정"; if (repeatLabelElement) repeatLabelElement.style.display = 'none'; if(repeatOnWeekdayCheckbox) repeatOnWeekdayCheckbox.style.display = 'none';
@@ -242,21 +262,15 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function toggleTimeFields() { 
     if (!workTypeEl || !timeFieldsEl || !startHourEl || !startMinuteEl || !endHourEl || !endMinuteEl || !repeatOnWeekdayCheckbox) return;
-    const isHoliday = workTypeEl.value === '휴가'; const currentMode = workRecordForm.dataset.mode;
-    timeFieldsEl.style.display = isHoliday ? 'none' : 'block';
-    startHourEl.disabled = isHoliday; startMinuteEl.disabled = isHoliday; endHourEl.disabled = isHoliday; endMinuteEl.disabled = isHoliday;
-    const repeatLabelElement = document.querySelector('label[for="repeatOnWeekday"]'); // Get the label
+    const isHolidayValue = workTypeEl.value === '휴가'; const currentMode = workRecordForm.dataset.mode;
+    timeFieldsEl.style.display = isHolidayValue ? 'none' : 'block';
+    startHourEl.disabled = isHolidayValue; startMinuteEl.disabled = isHolidayValue; endHourEl.disabled = isHolidayValue; endMinuteEl.disabled = isHolidayValue;
+    const repeatLabelElement = document.querySelector('label[for="repeatOnWeekday"]');
     if (repeatLabelElement) { 
-        if (isHoliday || currentMode === 'edit') { 
-            repeatLabelElement.style.display = 'none'; // Hide label (which contains checkbox)
-            repeatOnWeekdayCheckbox.checked = false; 
-            // repeatOnWeekdayCheckbox.style.display = 'none'; // Checkbox is inside label, so label hide is enough
-        } else { 
-            repeatLabelElement.style.display = 'flex'; // Or 'block' based on your CSS for checkbox-label
-            // repeatOnWeekdayCheckbox.style.display = 'inline-block';
-        }
+        if (isHolidayValue || currentMode === 'edit') { repeatLabelElement.style.display = 'none'; repeatOnWeekdayCheckbox.checked = false; repeatOnWeekdayCheckbox.style.display = 'none'; } 
+        else { repeatLabelElement.style.display = 'flex'; repeatOnWeekdayCheckbox.style.display = 'inline-block'; }
     }
-    repeatOnWeekdayCheckbox.disabled = isHoliday || currentMode === 'edit';
+    repeatOnWeekdayCheckbox.disabled = isHolidayValue || currentMode === 'edit';
   }
 
   if(workRecordForm) workRecordForm.addEventListener('submit', async (e) => { 
@@ -270,16 +284,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("[FormSubmit] 수정할 기록:", payload);
     } else { 
         actionType = "saveWorkRecords"; let recordsToSave = [];
-        recordsToSave.push(currentRecordData); 
+        recordsToSave.push(currentRecordData); // 현재 입력된 날짜의 기록은 항상 포함
         if (shouldRepeat && currentRecordData.workType !== '휴가') {
             const originalDateObj = new Date(currentRecordData.date + "T00:00:00");
             const originalDayOfMonth = originalDateObj.getDate(); const targetDayOfWeek = originalDateObj.getDay();
-            const year = currentDisplayedDate.getFullYear(); const month = currentDisplayedDate.getMonth(); 
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            for (let day = originalDayOfMonth + 1; day <= daysInMonth; day++) { 
-                const currentDateInLoop = new Date(year, month, day);
+            const yearValue = currentDisplayedDate.getFullYear(); const monthValue = currentDisplayedDate.getMonth(); // JS month (0-11)
+            const daysInMonthValue = new Date(yearValue, monthValue + 1, 0).getDate();
+            for (let dayValue = originalDayOfMonth + 1; dayValue <= daysInMonthValue; dayValue++) { 
+                const currentDateInLoop = new Date(yearValue, monthValue, dayValue);
                 if (currentDateInLoop.getDay() === targetDayOfWeek) {
-                    recordsToSave.push({ ...currentRecordData, date: `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` });
+                    recordsToSave.push({ ...currentRecordData, date: `${yearValue}-${String(monthValue + 1).padStart(2, '0')}-${String(dayValue).padStart(2, '0')}` });
                 }
             }
         }
@@ -339,5 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("앱 초기화 완료.");
   }
 
+  // --- 초기화 실행 ---
   initializeApp();
 });
