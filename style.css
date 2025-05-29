@@ -1,4 +1,4 @@
-/* style.css (전체 코드 - 2025-05-29 최종 수정본) */
+/* style.css (전체 코드 - 2025-05-29 모바일 레이아웃 수정) */
 body {
   font-family: 'Malgun Gothic', '맑은 고딕', Dotum, '돋움', sans-serif;
   margin: 0;
@@ -43,11 +43,16 @@ body {
 
 .calendar-navigation-controls {
   display: flex;
-  justify-content: center; 
+  justify-content: space-between; /* 양쪽 정렬하여 버튼들과 제목 배치 */
   align-items: center;
   margin-bottom: 15px;
   width: 100%; 
   max-width: 700px; 
+}
+
+.calendar-navigation-controls .nav-buttons-group { /* 이전/다음 버튼 묶음 (선택사항) */
+    display: flex;
+    gap: 10px;
 }
 
 .calendar-navigation-controls button {
@@ -58,17 +63,19 @@ body {
   border-radius: 3px;
   cursor: pointer;
   font-size: 0.9em;
+  white-space: nowrap; /* 버튼 내 글자 줄바꿈 방지 */
 }
 .calendar-navigation-controls button:hover {
   background-color: #4cae4c;
 }
 
 .calendar-navigation-controls h2 { 
-  margin: 0 15px; 
+  margin: 0 10px; 
   font-size: 1.5em;
   color: #333;
   white-space: nowrap;
   text-align: center; 
+  flex-grow: 1; /* 남는 공간 차지하며 중앙에 위치 */
 }
 
 #calendar { 
@@ -125,7 +132,7 @@ body {
   margin-bottom: 5px;
   border-radius: 3px;
   cursor: pointer;
-  color: #fff; /* JS에서 배경색에 따라 조정됨 */
+  color: #fff; 
   font-weight: bold;
   font-size: 0.85em;
   transition: opacity 0.3s ease, box-shadow 0.2s ease;
@@ -181,7 +188,7 @@ body {
   display: block;
   text-align: left;
   font-size: 0.95em;
-  padding: 2px 4px; /* 클릭 영역 및 모양 개선 */
+  padding: 2px 4px; 
   border-radius: 3px;
   cursor: pointer; 
   user-select: none; 
@@ -207,17 +214,21 @@ body {
   color: red !important; 
   font-weight: bold;
 }
-.calendar-day.saturday .day-number { /* 토요일 날짜 숫자 */
+.calendar-day.saturday .day-number { 
   color: blue;
 }
-/* 오늘 날짜가 토요일이나 일요일, 휴일일 경우 색상 우선순위 고려 */
-.calendar-day.today .day-number:not(.holiday-date-number):not(.sunday-date-number):not(.saturday .day-number) {
+.calendar-day.today .day-number:not(.holiday-date-number):not(.sunday-date-number) {
+  /* 토요일이면서 오늘인 경우 파란색 유지를 위해 .saturday 클래스에 대한 제외 조건 추가 필요시 */
+  /* 예: .calendar-day.today .day-number:not(.holiday-date-number):not(.sunday-date-number):not(.saturday .day-number) */
   font-weight: bold;
   color: #007bff; 
 }
-.calendar-day.today .day-number.saturday:not(.holiday-date-number){ /* 오늘이면서 토요일(휴일아님) */
-    color: blue;
+.calendar-day.today.saturday .day-number:not(.holiday-date-number) { /* 오늘이면서 토요일(휴일아님) */
+    color: blue !important; /* 파란색 우선 */
     font-weight: bold;
+}
+.calendar-day.today .day-number.holiday-date-number { /* 오늘이면서 휴일이면 빨간색 */
+  color: red !important;
 }
 
 
@@ -481,14 +492,13 @@ body {
 #statsTableContainer td:nth-child(3) { /* 근무형태 */
     text-align: left;
 }
-#statsTableContainer td.notes-cell { /* 비고 열 스타일 */
+#statsTableContainer td.notes-cell { 
     max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: left;
 }
-
 
 #statsTableContainer th {
   background-color: #f2f2f2;
@@ -537,30 +547,15 @@ body {
 
 /* --- 로더 및 상태 메시지 --- */
 .loader { 
-  text-align: center; 
-  padding: 20px; 
-  font-size: 1.1em; 
-  position: fixed; 
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255,255,255,0.8);
-  border-radius: 5px;
-  z-index: 2000; 
+  text-align: center; padding: 20px; font-size: 1.1em; position: fixed; 
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background-color: rgba(255,255,255,0.8); border-radius: 5px; z-index: 2000; 
 }
 .status-message {
-  text-align: center;
-  padding: 10px 15px;
-  margin: 10px auto; 
-  border-radius: 4px;
-  font-size: 0.9em;
-  position: fixed; 
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000; 
-  min-width: 250px; 
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  text-align: center; padding: 10px 15px; margin: 10px auto; 
+  border-radius: 4px; font-size: 0.9em; position: fixed; 
+  top: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 2000; min-width: 250px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 .status-message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;}
 .status-message.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;}
@@ -577,77 +572,83 @@ body {
   }
 
   .app-layout-container {
-    flex-direction: column; 
+    flex-direction: column; /* 달력 섹션과 사이드바를 세로로 쌓음 */
     padding: 10px;
   }
 
   .calendar-section {
     width: 100%; 
+    order: 1; 
   }
   
   .calendar-navigation-controls {
-      flex-direction: column; /* 세로로 쌓음 */
-      gap: 8px; /* 요소간 간격 */
+      flex-direction: row; /* 한 줄 유지를 위해 row 유지 */
+      flex-wrap: nowrap;   /* 줄바꿈 방지 */
+      justify-content: space-between; /* 양쪽 끝으로 요소 배치 */
+      width: 100%; /* 부모 너비 전체 사용 */
+      gap: 5px; /* 최소 간격 */
   }
-  .calendar-navigation-controls .nav-buttons{
-      order:2; /* 연/월 표시 다음으로 */
+  .calendar-navigation-controls .nav-buttons-group { /* 이전/다음 버튼 그룹은 더 이상 사용 안함 */
+      display:contents; /* 이 그룹핑 div는 레이아웃에 영향 안 주도록 */
   }
-   .calendar-navigation-controls h2 { /* 연/월 표시 */
-    font-size: 1.3em; 
-    margin: 0 0 8px 0; /* 상하 간격 */
-    order:1; /* 맨 위로 */
+  .calendar-navigation-controls button { /* 이전/다음 버튼 */
+    padding: 5px 8px; 
+    font-size: 0.85em;
+    flex-shrink: 0; /* 버튼 크기 유지 */
   }
-  .calendar-navigation-controls button {
-    font-size: 0.9em; 
-    padding: 6px 10px;
+  .calendar-navigation-controls h2 { /* 연/월 표시 */
+    font-size: 1.1em; 
+    margin: 0 5px; /* 좌우 최소 간격 */
+    white-space: nowrap; 
+    text-align: center;
+    flex-grow: 0; /* 자동으로 늘어나지 않도록 */
+    flex-shrink: 1; /* 공간 부족 시 줄어들도록 */
+    /* order 속성 제거하여 HTML 순서대로 (이전 - 제목 - 다음) */
   }
-
 
   .sidebar-section {
     width: 100%; 
     margin-top: 20px; 
     gap: 10px;
+    order: 2; 
   }
   
   .sidebar-section .stats-btn {
-    font-size: 1em; /* 통계 버튼은 조금 크게 */
+    font-size: 1em; 
     padding: 10px;
   }
 
   .staff-list-container {
     width: 100%;
-    max-height: 200px; /* 모바일에서 직원 목록 높이 제한 */
+    max-height: none; /* 요청사항: 스크롤 없이 모두 펼치기 */
+    overflow-y: visible; /* 스크롤 제거 */
+    /* min-height으로 내용만큼 늘어나게 하되, 너무 길어지는건 페이지 스크롤로 대체 */
   }
   
   #staffListUl li {
-    font-size: 0.9em; /* 모바일에서 직원 이름 약간 크게 */
+    font-size: 0.9em; 
   }
 
   .calendar-day {
-    min-height: 100px; /* 모바일에서 날짜 칸 최소 높이 조정 */
-    font-size: 0.8em; /* 셀 내부 기본 폰트 */
+    min-height: 100px; 
+    font-size: 0.8em; 
   }
   .calendar-day .day-number {
-    font-size: 0.9em; /* 날짜 숫자 크기 */
+    font-size: 0.9em; 
   }
-  .work-entry { /* 시간 막대 */
+  .work-entry { /* 시간 막대 안의 텍스트 크기는 PC와 동일 (1.04em) 유지 */
     height: 17px; 
     line-height: 17px;
-    font-size: 0.95em; /* 요청하신 1.04em이 너무 클 수 있어 약간 조정, 필요시 1.04em으로 */
-                      /* 현재 PC버전은 1.04em 입니다. */
   }
-  .work-entry .delete-btn { /* 모바일에서는 삭제버튼 약간 크게 */
-    width: 18px;
-    height: 18px;
-    line-height: 18px;
-    font-size: 16px;
+  .work-entry .delete-btn { 
+    width: 18px; height: 18px; line-height: 18px; font-size: 16px;
   }
   
   .modal-content {
     width: 95%; 
     margin: 5% auto;
     padding: 15px;
-    font-size: 0.95em; /* 모달 내부 폰트 조정 */
+    font-size: 0.95em; 
   }
   .stats-modal-content {
     max-width: 95%; 
@@ -666,18 +667,17 @@ body {
     min-width: 60px; 
   }
 
-
   #statsTableContainer table {
-    font-size: 0.75em; /* 통계 테이블 폰트 더 작게 */
+    font-size: 0.75em; 
   }
   #statsTableContainer th, #statsTableContainer td {
-    padding: 4px; /* 패딩 줄임 */
+    padding: 4px; 
   }
    #statsTableContainer td.notes-cell {
-    max-width: 60px; /* 모바일 비고 칸 더 줄임 */
+    max-width: 60px; 
   }
   #statsSummaryContainer {
-    font-size: 0.8em;
+    font-size: 0.85em;
   }
   #statsSummaryContainer .total-hours-summary {
     font-size: 1em;
