@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>에이트약국 근무 스케줄</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="./image_dd3b4e.png">
 </head>
 <body>
   <h1 class="page-title">에이트약국 근무 스케줄 🗓️</h1>
 
-  <div class="app-layout-container"> <div class="calendar-section"> <div class="calendar-navigation-controls">
+  <div class="app-layout-container">
+
+    <div class="calendar-section">
+      <div class="calendar-navigation-controls">
         <button id="prevMonthBtn">&lt; 이전 달</button>
         <h2 id="currentMonthYear"></h2>
         <button id="nextMonthBtn">다음 달 &gt;</button>
@@ -18,7 +22,8 @@
         </div>
     </div>
 
-    <div class="sidebar-section"> <button id="statsButton" class="stats-btn">📊 통계 보기</button>
+    <div class="sidebar-section">
+      <button id="statsButton" class="stats-btn">📊 통계 보기</button>
       <div id="staffListContainer" class="staff-list-container">
         <h3>직원 명단</h3>
         <ul id="staffListUl">
@@ -31,8 +36,7 @@
 
   <div id="workRecordModal" class="modal">
     <div class="modal-content">
-      <span class="close-button" id="closeModalBtn">&times;</span>
-      <h3 id="modalTitle">근무 기록 추가</h3>
+      <span class="close-button" id="closeModalBtn">&times;</span> <h3 id="modalTitle">근무 기록 추가</h3>
       <form id="workRecordForm">
         <div>
           <label for="recordDate">날짜:</label>
@@ -47,9 +51,11 @@
           <select id="workType" name="workType" required>
             <option value="주간">주간</option>
             <option value="마감">마감</option>
-            <option value="휴가">휴가</option>
+            <option value="휴가">휴가 (하루)</option>
+            <option value="휴무">휴무 (기간)</option> 
           </select>
         </div>
+
         <div id="timeFields">
           <div class="time-select-group">
             <label for="startHour">출근시간:</label>
@@ -66,11 +72,24 @@
             </div>
           </div>
         </div>
+
+        <div id="leavePeriodFields" style="display:none;">
+          <div class="time-select-group"> 
+            <label for="leaveStartDate">휴무 시작일:</label>
+            <input type="date" id="leaveStartDate" name="leaveStartDate" class="date-input-full-width">
+          </div>
+          <div class="time-select-group">
+            <label for="leaveEndDate">휴무 종료일:</label>
+            <input type="date" id="leaveEndDate" name="leaveEndDate" class="date-input-full-width">
+          </div>
+        </div>
+
         <div>
           <label for="notes">비고:</label>
           <textarea id="notes" name="notes"></textarea>
         </div>
-        <div> <label for="repeatOnWeekday" class="checkbox-label">
+        <div id="repeatContainer"> 
+          <label for="repeatOnWeekday" class="checkbox-label">
             <input type="checkbox" id="repeatOnWeekday" name="repeatOnWeekday">
             이 달의 같은 요일에 반복 적용 🗓️
           </label>
@@ -82,8 +101,7 @@
 
   <div id="statsModal" class="modal">
     <div class="modal-content stats-modal-content">
-      <span class="close-button" id="closeStatsModalBtn">&times;</span>
-      <h3>월간 근무 통계 📈</h3>
+      <span class="close-button" id="closeStatsModalBtn">&times;</span> <h3>월간 근무 통계 📈</h3>
       <div class="stats-controls">
         <label for="statsStaffSelect">직원 선택:</label>
         <select id="statsStaffSelect"></select>
@@ -92,6 +110,18 @@
       <div id="statsTableContainer">
         </div>
       <div id="statsSummaryContainer">
+        </div>
+    </div>
+  </div>
+
+  <div id="dailySummaryModal" class="modal">
+    <div class="modal-content daily-summary-modal-content">
+      <span class="close-button" id="closeDailySummaryModalBtn">&times;</span> <h3 id="dailySummaryDateDisplay">2025-00-00 (X) 근무 요약</h3>
+      <div class="daily-summary-controls">
+          <button id="toggleHolidayBtn">이 날을 휴일로 지정</button> 
+          <button id="addWorkFromSummaryBtn" class="add-work-btn">이 날짜에 근무 추가</button>
+      </div>
+      <div id="dailySummaryWorkList">
         </div>
     </div>
   </div>
