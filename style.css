@@ -395,7 +395,7 @@ body {
   .sidebar-section .stats-btn { font-size: 1em; padding: 10px; }
   .staff-list-container { width: 100%; max-height: none; overflow-y: visible; }
   #staffListUl li { font-size: 0.9em; }
-  .calendar-day { min-height: 100px; font-size: 0.8em; }
+  .calendar-day { min-height: 125px; font-size: 0.8em; }
   .calendar-day .day-number { font-size: 0.9em; }
   .work-entry { height: 17px; line-height: 17px; font-size: 1.04em; } /* 모바일에서도 막대 내 폰트 1.04em 유지 */
   .work-entry .delete-btn { width: 18px; height: 18px; line-height: 18px; font-size: 16px; }
